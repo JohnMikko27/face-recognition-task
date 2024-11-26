@@ -15,7 +15,19 @@ export default function App() {
       webcamRef.current, 
       new faceapi.TinyFaceDetectorOptions()
     ).withFaceLandmarks().withAgeAndGender().withFaceExpressions()
-    console.log(detections)
+    canvasRef.current.innerHtml = faceapi.createCanvasFromMedia(webcamRef.current)
+    faceapi.matchDimensions(canvasRef.current, {
+      width: 500,
+      height: 300
+    })
+    const resized = faceapi.resizeResults(detections, {
+      width: 500,
+      height: 300
+    })
+    faceapi.draw.drawDetections(canvasRef.current, resized)
+    faceapi.draw.drawFaceExpressions(canvasRef.current, resized)
+    faceapi.draw.drawFaceLandmarks(canvasRef.current, resized)
+
   }
 
   useEffect(() => {
@@ -45,7 +57,7 @@ export default function App() {
         ref={webcamRef}
       />
       <canvas ref={canvasRef}
-      className=" absolute "></canvas>
+      className=" absolute w-[500px] h-[300px]"></canvas>
     </div>
   )
 }
