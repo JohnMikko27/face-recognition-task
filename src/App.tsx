@@ -16,6 +16,7 @@ export default function App() {
         new faceapi.TinyFaceDetectorOptions({ inputSize: 512, scoreThreshold: 0.5 })
       ).withFaceLandmarks().withAgeAndGender().withFaceExpressions()
       canvasRef.current.innerHtml = faceapi.createCanvasFromMedia(videoRef.current)
+      console.log(detections)
       const displaySize = {
         width: videoRef.current.clientWidth,
         height: videoRef.current.clientHeight
