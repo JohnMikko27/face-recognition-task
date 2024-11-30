@@ -6,3 +6,6 @@ This is a simple facial recognition project that captures the face of a person a
 - TypeScript
 - Tailwind CSS
 - face-api.js
+
+## Demo
+<img src="public/assets/Kapture 2024-11-30 at 08.41.59.gif"/>
