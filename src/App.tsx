@@ -15,7 +15,6 @@ export default function App() {
         videoRef.current, 
         new faceapi.TinyFaceDetectorOptions({ inputSize: 512, scoreThreshold: 0.5 })
       ).withFaceLandmarks().withAgeAndGender().withFaceExpressions()
-      console.log(detections)
       canvasRef.current.innerHtml = faceapi.createCanvasFromMedia(videoRef.current)
       const displaySize = {
         width: videoRef.current.clientWidth,
@@ -67,7 +66,7 @@ export default function App() {
       loadModels();
     }
   }, [])
-  // useAnimationFrame(handleDetection)
+  useAnimationFrame(handleDetection)
   
   return (
     <div className="h-screen w-screen flex justify-center items-center relative">
