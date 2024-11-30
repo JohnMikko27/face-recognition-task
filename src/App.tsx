@@ -1,40 +1,33 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useEffect, useRef, useState } from "react"
-import CustomWebcam from "./components/customwebcam"
 import * as faceapi from "face-api.js"
-import Webcam from "react-webcam";
+import useAnimationFrame from "use-animation-frame"
 
 export default function App() {
   const canvasRef = useRef<any>()
   const videoRef = useRef<HTMLVideoElement>(null)
-  const [stream, setStream] = useState<any>()
+  const [stream, setStream] = useState<MediaStream>()
 
   const handleDetection = async() => {
     if (videoRef.current && videoRef.current instanceof HTMLVideoElement) {
-      console.log("here1")
       const detections = await faceapi.detectAllFaces(
         videoRef.current, 
         new faceapi.TinyFaceDetectorOptions({ inputSize: 512, scoreThreshold: 0.5 })
       ).withFaceLandmarks().withAgeAndGender().withFaceExpressions()
-      console.log("detections:")
       console.log(detections)
-
       canvasRef.current.innerHtml = faceapi.createCanvasFromMedia(videoRef.current)
-      faceapi.matchDimensions(canvasRef.current, {
-        width: 720,
-        height: 560
-      })
-      const resized = faceapi.resizeResults(detections, {
-        width: 720,
-        height: 560
-      })
+      const displaySize = {
+        width: videoRef.current.clientWidth,
+        height: videoRef.current.clientHeight
+      };
+      faceapi.matchDimensions(canvasRef.current, displaySize)
+      const resized = faceapi.resizeResults(detections, displaySize)
 
       faceapi.draw.drawDetections(canvasRef.current, resized)
       faceapi.draw.drawFaceExpressions(canvasRef.current, resized)
       faceapi.draw.drawFaceLandmarks(canvasRef.current, resized)
     } 
-    // setInterval(() => handleDetection())
   }
   
   useEffect(() => {
@@ -43,20 +36,16 @@ export default function App() {
         const mediaStream = await navigator.mediaDevices.getUserMedia({ video: true });
         setStream(mediaStream);
         if (videoRef.current) {
-          console.log("ok")
           videoRef.current.srcObject = mediaStream;
         }
       } catch (error) {
         console.error('Error accessing webcam:', error);
       }
     };
-
     startWebcam();
-
     return () => {
       if (stream) {
-        console.log("ok")
-        stream.getTracks().forEach((track: any) => track.stop());
+        stream.getTracks().forEach((track: MediaStreamTrack) => track.stop());
       }
     };
   }, []);
@@ -70,8 +59,6 @@ export default function App() {
           faceapi.nets.faceExpressionNet.loadFromUri("/src/models"),
           faceapi.nets.ageGenderNet.loadFromUri("/src/models")
         ]);
-        console.log("Models loaded successfully");
-        // handleDetection();
       } catch (e) {
         console.error("Error loading models:", e);
       }
@@ -79,16 +66,14 @@ export default function App() {
     if (videoRef.current) {
       loadModels();
     }
-
   }, [])
-
+  // useAnimationFrame(handleDetection)
   
   return (
-    <div className="h-screen w-screen flex justify-center items-center">
+    <div className="h-screen w-screen flex justify-center items-center relative">
       <video autoPlay muted ref={videoRef} onPlay={handleDetection}
-      className="w-[720px] h-[560px]"></video>
-      <canvas ref={canvasRef}
-      className=" absolute w-[720px] h-[560px]"></canvas>
+        className="w-full h-auto max-w-[720px] max-h-[560px]"></video>
+      <canvas ref={canvasRef} className="absolute w-full h-auto max-w-[720px] max-h-[560px]"></canvas>
     </div>
   )
 }
