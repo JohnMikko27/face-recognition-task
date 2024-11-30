@@ -72,7 +72,7 @@ export default function App() {
   
   return (
     <div className="h-screen w-screen flex justify-center items-center relative">
-      <video autoPlay muted ref={videoRef} onPlay={handleDetection}
+      <video autoPlay muted ref={videoRef}
         className="w-full h-auto max-w-[720px] max-h-[560px]"></video>
       <canvas ref={canvasRef} className="absolute w-full h-auto max-w-[720px] max-h-[560px]"></canvas>
     </div>
