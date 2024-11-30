@@ -2,7 +2,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useEffect, useRef, useState } from "react"
 import * as faceapi from "face-api.js"
-import useAnimationFrame from "use-animation-frame"
+// import useAnimationFrame from "use-animation-frame"
 
 export default function App() {
   const canvasRef = useRef<any>()
