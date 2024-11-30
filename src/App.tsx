@@ -27,6 +27,7 @@ export default function App() {
       faceapi.draw.drawFaceExpressions(canvasRef.current, resized)
       faceapi.draw.drawFaceLandmarks(canvasRef.current, resized)
     } 
+    requestAnimationFrame(handleDetection)
   }
   
   useEffect(() => {
@@ -66,7 +67,7 @@ export default function App() {
       loadModels();
     }
   }, [])
-  useAnimationFrame(handleDetection)
+  // useAnimationFrame(handleDetection)
   
   return (
     <div className="h-screen w-screen flex justify-center items-center relative">
