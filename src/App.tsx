@@ -8,8 +8,10 @@ export default function App() {
   const canvasRef = useRef<any>()
   const videoRef = useRef<HTMLVideoElement>(null)
   const [stream, setStream] = useState<MediaStream>()
+  const [modelsLoaded, setModelsLoaded] = useState(false)
 
   const handleDetection = async() => {
+    if (!modelsLoaded) return
     if (videoRef.current && videoRef.current instanceof HTMLVideoElement) {
       const detections = await faceapi.detectAllFaces(
         videoRef.current, 
@@ -59,7 +61,10 @@ export default function App() {
           faceapi.nets.faceLandmark68Net.loadFromUri("/models"),
           faceapi.nets.faceExpressionNet.loadFromUri("/models"),
           faceapi.nets.ageGenderNet.loadFromUri("/models")
-        ]).then(handleDetection);
+        ]).then(() => {
+          setModelsLoaded(true)
+          handleDetection()
+        });
         
       } catch (e) {
         console.error("Error loading models:", e);
@@ -73,7 +78,7 @@ export default function App() {
   
   return (
     <div className="h-screen w-screen flex justify-center items-center relative">
-      <video autoPlay muted ref={videoRef}
+      <video autoPlay muted ref={videoRef} onPlay={handleDetection}
         className="w-full h-auto max-w-[720px] max-h-[560px]"></video>
       <canvas ref={canvasRef} className="absolute w-full h-auto max-w-[720px] max-h-[560px]"></canvas>
     </div>
