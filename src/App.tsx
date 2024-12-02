@@ -59,8 +59,8 @@ export default function App() {
           faceapi.nets.faceLandmark68Net.loadFromUri("/models"),
           faceapi.nets.faceExpressionNet.loadFromUri("/models"),
           faceapi.nets.ageGenderNet.loadFromUri("/models")
-        ]);
-        handleDetection()
+        ]).then(handleDetection);
+        
       } catch (e) {
         console.error("Error loading models:", e);
       }
